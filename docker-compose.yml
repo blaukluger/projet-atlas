@@ -1,0 +1,36 @@
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: atlas_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: projet_atlas
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    
+  backend:
+    build: ./backend
+    container_name: atlas_backend
+    restart: always
+    ports:
+    - "5001:5000"
+    depends_on:
+    - db
+  
+  frontend:
+    build: ./frontend
+    container_name: atlas_frontend
+    restart: always
+    ports:
+    - "3001:5173"
+    depends_on:
+    - backend
+    - db
+
+volumes:
+      pgdata:
